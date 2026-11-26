@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: auth-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      properties:
+        enable.idempotence: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/auth_db
+    username: payflow
+    password: payflow_dev_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8081
+
+payflow:
+  jwt:
+    issuer: payflow-auth
+    access-token-ttl: 15m
+    refresh-token-ttl: 7d
+    key-id: payflow-key-1
+    private-key: ${JWT_PRIVATE_KEY:}
+    public-key: ${JWT_PUBLIC_KEY:}
+  outbox:
+    publisher:
+      enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
